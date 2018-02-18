@@ -2,41 +2,41 @@
     all: unset;
 }
 
-.link-anchor {
-position: relative;
-width: 0;
-font-size: .8em;
-opacity: 0;
-transition: opacity .2s ease-in-out;
+.doq .link-anchor {
+    position: relative;
+    width: 0;
+    font-size: .8em;
+    opacity: 0;
+    transition: opacity .2s ease-in-out;
 }
-.anchor-wrapper {
-border: none;
+.doq .anchor-wrapper {
+    border: none;
 }
-.anchor-wrapper:hover .link-anchor {
-opacity: 1;
-}
-
-section h1[id]:focus,
-section h2[id]:focus,
-section h3[id]:focus,
-section h4[id]:focus,
-section h5[id]:focus {
-outline: 0;
+.doq  .anchor-wrapper:hover .link-anchor {
+    opacity: 1;
 }
 
-p.thin {
+.doq section h1[id]:focus,
+.doq section h2[id]:focus,
+.doq section h3[id]:focus,
+.doq section h4[id]:focus,
+.doq section h5[id]:focus {
+    outline: 0;
+}
+
+.doq p.thin {
     font-weight: 100;
     margin: 0;
     line-height: 1.2em;
 }
 
-p.bold {
+.doq p.bold {
     font-weight: 900;
     margin: 0;
     margin-top: -5px;
 }
 
-.rel {
+.doq .rel {
     width: 30%;
     margin: 0 auto;
     position: relative;
@@ -47,8 +47,8 @@ p.bold {
     border-width: medium;
 }
 
-.popper,
-.tooltip {
+.doq .popper,
+.doq .tooltip {
     position: absolute;
     background: #FFFFFF;
     color: black;
@@ -58,7 +58,7 @@ p.bold {
     padding: 10px;
     z-index: 9999;
 }
-.style5 .tooltip {
+.doq.style5 .tooltip {
     background: #1E252B;
     color: #FFFFFF;
     max-width: 600px;
@@ -67,8 +67,8 @@ p.bold {
     padding: .5em 1em;
     box-shadow: 0px 0px 40px 0px #424242;
 }
-.popper .popper__arrow,
-.tooltip .tooltip-arrow {
+.doq .popper .popper__arrow,
+.doq .tooltip .tooltip-arrow {
     width: 0;
     height: 0;
     border-style: solid;
@@ -76,19 +76,19 @@ p.bold {
     margin: 5px;
 }
 
-.tooltip .tooltip-arrow,
-.popper .popper__arrow {
+.doq .tooltip .tooltip-arrow,
+.doq .popper .popper__arrow {
     border-color: #FFFFFF;
 }
-.style5 .tooltip .tooltip-arrow {
+.doq.style5 .tooltip .tooltip-arrow {
     border-color: #1E252B;
 }
-.popper[x-placement^="top"],
-.tooltip[x-placement^="top"] {
+.doq .popper[x-placement^="top"],
+.doq .tooltip[x-placement^="top"] {
     margin-bottom: 5px;
 }
-.popper[x-placement^="top"] .popper__arrow,
-.tooltip[x-placement^="top"] .tooltip-arrow {
+.doq .popper[x-placement^="top"] .popper__arrow,
+.doq .tooltip[x-placement^="top"] .tooltip-arrow {
     border-width: 5px 5px 0 5px;
     border-left-color: transparent;
     border-right-color: transparent;
@@ -98,12 +98,12 @@ p.bold {
     margin-top: 0;
     margin-bottom: 0;
 }
-.popper[x-placement^="bottom"],
-.tooltip[x-placement^="bottom"] {
+.doq .popper[x-placement^="bottom"],
+.doq .tooltip[x-placement^="bottom"] {
     margin-top: 5px;
 }
-.tooltip[x-placement^="bottom"] .tooltip-arrow,
-.popper[x-placement^="bottom"] .popper__arrow {
+.doq .tooltip[x-placement^="bottom"] .tooltip-arrow,
+.doq .popper[x-placement^="bottom"] .popper__arrow {
     border-width: 0 5px 5px 5px;
     border-left-color: transparent;
     border-right-color: transparent;
@@ -113,12 +113,12 @@ p.bold {
     margin-top: 0;
     margin-bottom: 0;
 }
-.tooltip[x-placement^="right"],
-.popper[x-placement^="right"] {
+.doq .tooltip[x-placement^="right"],
+.doq .popper[x-placement^="right"] {
     margin-left: 5px;
 }
-.popper[x-placement^="right"] .popper__arrow,
-.tooltip[x-placement^="right"] .tooltip-arrow {
+.doq .popper[x-placement^="right"] .popper__arrow,
+.doq .tooltip[x-placement^="right"] .tooltip-arrow {
     border-width: 5px 5px 5px 0;
     border-left-color: transparent;
     border-top-color: transparent;
@@ -128,12 +128,12 @@ p.bold {
     margin-left: 0;
     margin-right: 0;
 }
-.popper[x-placement^="left"],
-.tooltip[x-placement^="left"] {
+.doq .popper[x-placement^="left"],
+.doq .tooltip[x-placement^="left"] {
     margin-right: 5px;
 }
-.popper[x-placement^="left"] .popper__arrow,
-.tooltip[x-placement^="left"] .tooltip-arrow {
+.doq .popper[x-placement^="left"] .popper__arrow,
+.doq .tooltip[x-placement^="left"] .tooltip-arrow {
     border-width: 5px 0 5px 5px;
     border-top-color: transparent;
     border-right-color: transparent;
@@ -143,22 +143,18 @@ p.bold {
     margin-left: 0;
     margin-right: 0;
 }
-.tooltip_highlight {
-    border-radius: 3px;
-    box-shadow:0px 0px 0px 1px #cccccc inset;
-}
-.hidden {
+.doq .hidden {
     display:none;
 }
-.pell-button {
+.doq .pell-button {
     width: auto !important;
 }
 
-.annotationEdit {
+.doq .annotationEdit {
     color: #000;
 }
 
-.savebutton {
+.doq .savebutton {
     background-color: #2b2b2b;
     border: 1px solid #484848;
     color: #dadada;
@@ -167,6 +163,14 @@ p.bold {
     margin-bottom: 10px;
 }
 
-.annotationEdit {
+.doq .savebutton:hover {
+    background-color:#333;
+}
+
+.doq .annotationEdit {
     width: 600px !important;
+}
+.tooltip_highlight {
+    border-radius: 3px;
+    box-shadow:0px 0px 0px 1px #cccccc inset;
 }

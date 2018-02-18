@@ -32,9 +32,9 @@ document.getElementsByTagName('head')[0].appendChild(script);
 
 
 document.body.innerHTML += `
-<div class="doq style5 unset">
+<div class="doq style5">
 
-    <div class="tooltip hidden unset" role="tooltip" id="popperPreview">
+    <div class="tooltip hidden" role="tooltip" id="doqPreviewElement">
         <div class="tooltip-arrow">
 
         </div>
@@ -45,16 +45,16 @@ document.body.innerHTML += `
         </div>
     </div>
 
-    <div class="tooltip hidden unset" role="tooltip" id="popperElement">
+    <div class="tooltip hidden" role="tooltip" id="doqEditElement">
         <div class="tooltip-arrow">
 
         </div>
         <div class="tooltip-inner">
-            <div class="annotationEdit unset">
-                <button class="savebutton unset" onclick="saveAnnotation()">Save changes</button>
-                <textarea id="editor" name="editor">
+            <div class="annotationEdit">
+                <button class="savebutton" onclick="saveAnnotation()">Save changes</button>
+                <textarea id="doqEditElementEditor" name="doqEditElementEditor">
 
-                    </textarea>
+                </textarea>
             </div>
         </div>
     </div>

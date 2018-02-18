@@ -1,6 +1,4 @@
 
-
-
 var editorInitialized = false;
 var dataStore = {};
 
@@ -8,15 +6,23 @@ var allowedElements = [
     'H1', 'H2', 'H3', 'SPAN', 'P'
 ];
 
-var formId = 'popperElement';
+var editFormId = 'doqEditElement';
+var previewFormId = 'doqPreviewElement';
+var highlightClass = 'tooltip_highlight';
 var getAnnotationsUrl = 'http://78.47.204.199:8080/doq/getAnnotations';
 var saveAnnotationUrl = 'http://78.47.204.199:8080/doq/saveAnnotation';
 
-var allowPreview = true;
+var previewTooltipVisible = false;
+var editTooltipVisible = false;
 var editor = null;
-var tooltip = null;
+var editTooltip = null;
 var previewTooltip = null;
 var selectedElement = null;
+var debug = true;
+
+var getElementId = function (e) {
+    return e.innerHTML;
+}
 
 var get = function (url, callbackSuccess, callbackError) {
     var xhttp = new XMLHttpRequest();
@@ -54,18 +60,19 @@ var post = function (url, obj, callbackSuccess, callbackError) {
 }
 
 var getBackendAnnotations = function (url, callbackSuccess, callbackError) {
-    var data = {};
     post(getAnnotationsUrl, { url: url }, function(d) {
-        data = d;
-        data['Join GitHub today'] = 'omg it works';
-        console.log(d);
-        callbackSuccess(data);
+        if (debug) {
+            console.log(d);
+        }
+        callbackSuccess(d);
     }, callbackError);
 };
 
 var setBackendAnnotation = function (url, elementIdentifier, annotation, callbackSuccess, callbackError) {
     post(saveAnnotationUrl, { url: url, elementIdentifier: elementIdentifier, annotationData: annotation }, function (d) {
-        console.log(d);
+        if (debug) {
+            console.log(d);
+        }
         callbackSuccess(d);
     }, callbackError);
 };
@@ -77,41 +84,42 @@ var init = function() {
         elements.forEach(function (element) {
             if (!element.children || element.children.length == 0) {
                 highlight(element);
-                // console.log(element.innerHTML);
             }
         });
-        console.log("DOM fully loaded and parsed");
+        if (debug) {
+            console.log("DOM fully loaded and parsed");
+        }
     });
 }
 
-document.addEventListener("DOMContentLoaded", function (event) {
-    init();
-});
-
 var getAnnotation = function (e) {
-    if (dataStore[e.innerHTML]) {
-        return dataStore[e.innerHTML];
+    var id = getElementId(e);
+    if (dataStore[id]) {
+        return dataStore[id];
     }
     return "";
 };
 
 var setAnnotation = function (e, annotation, callback) {
-    setBackendAnnotation(window.location.href, e.innerHTML, annotation, function (data) {
-        dataStore[e.innerHTML] = annotation;
+    setBackendAnnotation(window.location.href, getElementId(e), annotation, function (data) {
+        dataStore[getElementId(e)] = annotation;
         callback();
     });
 };
 
-var dispose = function () {
-    if (tooltip != null) {
-        tooltip.destroy();
-        tooltip = null;
+var disposePreviewTooltip = function () {
+    if (previewTooltip != null) {
+        previewTooltip.destroy();
+        previewTooltip = null;
     }
-    if (selectedElement != null) {
-        unhighlight(selectedElement);
-        selectedElement = null;
+}
+
+var disposeEditTooltip = function () {
+    if (editTooltip != null) {
+        editTooltip.destroy();
+        editTooltip = null;
     }
-    document.getElementById(formId).classList.add('hidden');
+    selectedElement = null;    
 }
 
 var findAncestor = function (el, cls) {
@@ -123,101 +131,94 @@ var isOrInsideTooltip = function (e) {
     return e.classList.contains('tooltip') || findAncestor(e, 'tooltip') != null;
 }
 
-var hideTooltip = function (e) {
-    if (!e || !isOrInsideTooltip(e)) {
-        allowPreview = true;
-        dispose();
-    }
-};
-
-var showTooltip = function (e) {
-    allowPreview = false;
-    hideAnnotationPreview(e.target);
-    if (!isOrInsideTooltip(e)) {
-        if (allowedElements.includes(e.tagName)) {
-            selectedElement = e;
-            highlight(selectedElement, true);
-            var pop = document.getElementById(formId);
-            pop.classList.remove('hidden');
-            pop.querySelector('div.annotationEdit').classList.remove('hidden');
-            tooltip = new Popper(selectedElement, pop);
-            editAnnotation();
-        }
-    }
-}
-
-document.addEventListener('click', function (e) {
-    hideTooltip(e.target);
-});
-
 function eventShowTooltip(el) {
     showAnnotationPreview(el.target);
 };
 
 function eventHideTooltip(el) {
-    hideAnnotationPreview(el.target);
+    if (!editTooltipVisible) { // only works if edit tooltip is not visible
+        hideAnnotationPreview(el.target);
+    }
 }
 
-var highlight = function (e, force) {
-    if (force) {
-        if (!e.classList.contains('tooltip_highlight')) {
-            e.classList.add('tooltip_highlight');
-        };
-    }
-    if (dataStore[e.innerHTML]) {
-        if (!e.classList.contains('tooltip_highlight')) {
-            e.classList.add('tooltip_highlight');
-        };
+var highlight = function (e) {
+    if (dataStore[getElementId(e)]) {
+        if (!e.classList.contains(highlightClass)) {
+            e.classList.add(highlightClass);
+        }
         e.addEventListener('mouseover', eventShowTooltip);
         e.addEventListener('mouseout', eventHideTooltip);
     }
 };
 
 var unhighlight = function (e) {
-    if (e.classList.contains('tooltip_highlight')) {
-        if (!dataStore[e.innerHTML]) {
-            e.classList.remove('tooltip_highlight');
-            e.removeEventListener('mouseover', eventShowTooltip);
-            e.removeEventListener('mouseout', eventHideTooltip);
+    if (!dataStore[getElementId(e)]) {
+        if (e.classList.contains(highlightClass)) {
+            e.classList.remove(highlightClass);
         }
+        e.removeEventListener('mouseover', eventShowTooltip);
+        e.removeEventListener('mouseout', eventHideTooltip);
     }
 };
 
 var showAnnotationPreview = function (e) {
-    if (allowPreview && dataStore[e.innerHTML]) {
-        var pop = document.getElementById('popperPreview');
+    if (!previewTooltipVisible && dataStore[getElementId(e)]) {
+        var pop = document.getElementById(previewFormId);
         pop.classList.remove('hidden');
         pop.querySelector('div.view').innerHTML = getAnnotation(e);
         previewTooltip = new Popper(e, pop);
+        previewTooltipVisible = true;
+        pop.addEventListener('mouseover', function (e) {
+            console.log('this happens first');
+        });
     }
 };
 
 var hideAnnotationPreview = function (e) {
-    var pop = document.getElementById('popperPreview');
-    pop.classList.add('hidden');
-    if (previewTooltip) {
-        previewTooltip.destroy();
+    if (previewTooltipVisible) {
+        var pop = document.getElementById(previewFormId);
+        pop.classList.add('hidden');
+        disposePreviewTooltip();
+        previewTooltipVisible = false;
     }
 }
 
-document.addEventListener('dblclick', function (e) {
-    showTooltip(e.target);
-});
-
-var editAnnotation = function () {
-    var pop = document.getElementById(formId);
-    pop.querySelector('div.annotationEdit').classList.remove('hidden');
-    if (!editorInitialized) {
-        editorInitialized = true;
-        editor = new Jodit('#editor');
+var showAnnotationEdit = function (e) {
+    if (!editTooltipVisible) {
+        var pop = document.getElementById(editFormId);
+        pop.classList.remove('hidden');
+        if (!editorInitialized) {
+            editorInitialized = true;
+            editor = new Jodit('#doqEditElementEditor');
+        }
+        editor.setEditorValue(getAnnotation(e));
+        editTooltip = new Popper(e, pop);
+        hideAnnotationPreview(e);
+        editTooltipVisible = true;
+        previewTooltipVisible = true;
     }
-    editor.setEditorValue(getAnnotation(selectedElement));
-}
+};
+
 var saveAnnotation = function () {
     setAnnotation(selectedElement, editor.getEditorValue(), function() {
         highlight(selectedElement);
-        hideTooltip();
+        disposeEditTooltip();
+        editTooltipVisible = false;
+        previewTooltipVisible = false;
     });
 }
+
+document.addEventListener('dblclick', function (e) {
+    selectedElement = e.target;
+    showAnnotationEdit(e.target);
+});
+
+document.addEventListener('click', function (e) {
+    if (editTooltipVisible && !isOrInsideTooltip(e.target)) {
+        disposeEditTooltip();
+        editTooltipVisible = false;
+        previewTooltipVisible = false;
+    }
+});
 
 init();
