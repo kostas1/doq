@@ -139,9 +139,9 @@ var showTooltip = function (e) {
             highlight(selectedElement, true);
             var pop = document.getElementById(formId);
             pop.classList.remove('hidden');
-            pop.querySelector('div.annotationView').classList.remove('hidden');
-            pop.querySelector('div.annotationEdit').classList.add('hidden');
+            pop.querySelector('div.annotationEdit').classList.remove('hidden');
             tooltip = new Popper(selectedElement, pop);
+            editAnnotation();
         }
     }
 }
@@ -206,7 +206,6 @@ document.addEventListener('dblclick', function (e) {
 
 var editAnnotation = function () {
     var pop = document.getElementById(formId);
-    pop.querySelector('div.annotationView').classList.add('hidden');
     pop.querySelector('div.annotationEdit').classList.remove('hidden');
     if (!editorInitialized) {
         editorInitialized = true;
