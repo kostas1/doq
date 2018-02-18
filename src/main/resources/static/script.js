@@ -18,6 +18,9 @@ var editor = null;
 var editTooltip = null;
 var previewTooltip = null;
 var selectedElement = null;
+var mouseOverPreview = false;
+var mouseOverHighlight = false;
+var previewMouseMoveTimeout = 100;
 var debug = true;
 
 var getElementId = function (e) {
@@ -132,10 +135,12 @@ var isOrInsideTooltip = function (e) {
 }
 
 function eventShowTooltip(el) {
+    mouseOverHighlight = true;
     showAnnotationPreview(el.target);
 };
 
 function eventHideTooltip(el) {
+    mouseOverHighlight = false;
     if (!editTooltipVisible) { // only works if edit tooltip is not visible
         hideAnnotationPreview(el.target);
     }
@@ -161,6 +166,15 @@ var unhighlight = function (e) {
     }
 };
 
+var addMouseOverPreview = function (e) {
+    mouseOverPreview = true;
+};
+
+var removeMouseOverPreview = function (e) {
+    mouseOverPreview = false;
+    hideAnnotationPreview(e);
+};
+
 var showAnnotationPreview = function (e) {
     if (!previewTooltipVisible && dataStore[getElementId(e)]) {
         var pop = document.getElementById(previewFormId);
@@ -168,19 +182,22 @@ var showAnnotationPreview = function (e) {
         pop.querySelector('div.view').innerHTML = getAnnotation(e);
         previewTooltip = new Popper(e, pop);
         previewTooltipVisible = true;
-        pop.addEventListener('mouseover', function (e) {
-            console.log('this happens first');
-        });
+        pop.addEventListener('mouseover', addMouseOverPreview);
+        pop.addEventListener('mouseout', removeMouseOverPreview);
     }
 };
 
 var hideAnnotationPreview = function (e) {
-    if (previewTooltipVisible) {
-        var pop = document.getElementById(previewFormId);
-        pop.classList.add('hidden');
-        disposePreviewTooltip();
-        previewTooltipVisible = false;
-    }
+    setTimeout(function() {
+        if (previewTooltipVisible && !mouseOverPreview && !mouseOverHighlight) {
+            var pop = document.getElementById(previewFormId);
+            pop.classList.add('hidden');
+            disposePreviewTooltip();
+            previewTooltipVisible = false;
+            pop.removeEventListener('mouseover', addMouseOverPreview);
+            pop.removeEventListener('mouseout', removeMouseOverPreview);
+        }
+    }, previewMouseMoveTimeout);
 }
 
 var showAnnotationEdit = function (e) {
