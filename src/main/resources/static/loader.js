@@ -1,6 +1,6 @@
 
-var domain = 'https://78.47.204.199:8443/doq';
-domain = 'https://localhost:8443/';
+var domain = 'http://78.47.204.199:8080/doq/';
+domain = 'http://localhost:8080/';
 
 
 

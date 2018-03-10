@@ -174,3 +174,8 @@
     border-radius: 3px;
     box-shadow:0px 0px 0px 1px #cccccc inset;
 }
+
+.tooltip_highlight_edit {
+    border-radius: 3px;
+    box-shadow:0px 0px 0px 1px #ff0000 inset;
+}

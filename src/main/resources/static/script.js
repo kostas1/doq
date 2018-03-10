@@ -9,6 +9,7 @@ var allowedElements = [
 var editFormId = 'doqEditElement';
 var previewFormId = 'doqPreviewElement';
 var highlightClass = 'tooltip_highlight';
+var highlightEditClass = 'tooltip_highlight_edit';
 var getAnnotationsUrl = 'http://78.47.204.199:8080/doq/getAnnotations';
 var saveAnnotationUrl = 'http://78.47.204.199:8080/doq/saveAnnotation';
 
@@ -92,6 +93,13 @@ var init = function() {
         if (debug) {
             console.log("DOM fully loaded and parsed");
         }
+
+        setTimeout(function() {
+            if (!editorInitialized) {
+                editorInitialized = true;
+                editor = new Jodit('#doqEditElementEditor');
+            }
+        }, 300);
     });
 }
 
@@ -122,7 +130,10 @@ var disposeEditTooltip = function () {
         editTooltip.destroy();
         editTooltip = null;
     }
-    selectedElement = null;    
+    unhighlightEdit(selectedElement);
+    selectedElement = null;
+    editTooltipVisible = false;
+    previewTooltipVisible = false;
 }
 
 var findAncestor = function (el, cls) {
@@ -176,7 +187,7 @@ var removeMouseOverPreview = function (e) {
 };
 
 var showAnnotationPreview = function (e) {
-    if (!previewTooltipVisible && dataStore[getElementId(e)]) {
+    if (!previewTooltipVisible && !editTooltipVisible && dataStore[getElementId(e)]) {
         var pop = document.getElementById(previewFormId);
         pop.classList.remove('hidden');
         pop.querySelector('div.view').innerHTML = getAnnotation(e);
@@ -204,15 +215,26 @@ var showAnnotationEdit = function (e) {
     if (!editTooltipVisible) {
         var pop = document.getElementById(editFormId);
         pop.classList.remove('hidden');
-        if (!editorInitialized) {
-            editorInitialized = true;
-            editor = new Jodit('#doqEditElementEditor');
-        }
         editor.setEditorValue(getAnnotation(e));
         editTooltip = new Popper(e, pop);
+        mouseOverPreview = false;
+        mouseOverHighlight = false;
         hideAnnotationPreview(e);
         editTooltipVisible = true;
         previewTooltipVisible = true;
+        hightlightEdit(e);
+    }
+};
+
+var hightlightEdit = function (e) {
+    if (!e.classList.contains(highlightEditClass)) {
+        e.classList.add(highlightEditClass);
+    }
+};
+
+var unhighlightEdit = function (e) {
+    if (e.classList.contains(highlightEditClass)) {
+        e.classList.remove(highlightEditClass);
     }
 };
 
@@ -220,21 +242,18 @@ var saveAnnotation = function () {
     setAnnotation(selectedElement, editor.getEditorValue(), function() {
         highlight(selectedElement);
         disposeEditTooltip();
-        editTooltipVisible = false;
-        previewTooltipVisible = false;
     });
 }
 
 document.addEventListener('dblclick', function (e) {
     selectedElement = e.target;
+    highlight(selectedElement);
     showAnnotationEdit(e.target);
 });
 
 document.addEventListener('click', function (e) {
     if (editTooltipVisible && !isOrInsideTooltip(e.target)) {
         disposeEditTooltip();
-        editTooltipVisible = false;
-        previewTooltipVisible = false;
     }
 });
 
