@@ -51,7 +51,7 @@ document.body.innerHTML += `
         </div>
         <div class="tooltip-inner">
             <div class="annotationEdit">
-                <button class="savebutton" onclick="saveAnnotation()">Save changes</button>
+                <button class="savebutton" onclick="DOQ.saveAnnotation()">Save changes</button>
                 <textarea id="doqEditElementEditor" name="doqEditElementEditor">
 
                 </textarea>
