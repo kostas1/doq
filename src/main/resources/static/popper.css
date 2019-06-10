@@ -175,6 +175,15 @@
     box-shadow:0px 0px 0px 1px #cccccc inset;
 }
 
+.tooltip_highlight:after {
+    content: "";
+    background: url('https://cdnjs.cloudflare.com/ajax/libs/topcoat-icons/0.1.0/svg/question.svg') no-repeat;
+    width: 12px;
+    height: 12px;
+    float: left;
+    margin: 0 0 0 6px;
+}
+
 .tooltip_highlight_edit {
     border-radius: 3px;
     box-shadow:0px 0px 0px 1px #ff0000 inset;

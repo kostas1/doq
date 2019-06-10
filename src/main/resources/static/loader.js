@@ -14,7 +14,7 @@ document.head.appendChild(popperLink);
 var editorLink = document.createElement('link');
 editorLink.id = 'joditcss';
 editorLink.rel = 'stylesheet';
-editorLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/jodit/3.0.4/jodit.min.css';
+editorLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/jodit/3.1.39/jodit.min.css';
 document.head.appendChild(editorLink);
 
 
@@ -23,7 +23,7 @@ script.src = 'https://unpkg.com/popper.js/dist/umd/popper.min.js';
 document.getElementsByTagName('head')[0].appendChild(script);
 
 script = document.createElement('script');
-script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jodit/3.0.37/jodit.min.js';
+script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jodit/3.1.39/jodit.min.js';
 document.getElementsByTagName('head')[0].appendChild(script);
 
 script = document.createElement('script');

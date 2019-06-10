@@ -22,7 +22,7 @@ var DOQ = DOQ || (function() {
     var selectedElement = null;
     var mouseOverPreview = false;
     var mouseOverHighlight = false;
-    var previewMouseMoveTimeout = 100;
+    var previewMouseMoveTimeout = 10;
     var debug = true;
 
     var getElementId = function (e) {
@@ -125,14 +125,20 @@ var DOQ = DOQ || (function() {
     }
 
     var eventShowTooltip = function (el) {
+        if (debug) {
+            console.log('moving onto ' + el.toElement);
+        }
         mouseOverHighlight = true;
-        showAnnotationPreview(el.target);
+        showAnnotationPreview(el.toElement);
     };
 
     var eventHideTooltip = function (el) {
+        if (debug) {
+            console.log('moving away from ' + el.fromElement);
+        }
         mouseOverHighlight = false;
         if (!editTooltipVisible) { // only works if edit tooltip is not visible
-            hideAnnotationPreview(el.target);
+            hideAnnotationPreview(el.fromElement);
         }
     }
 
